@@ -41,6 +41,7 @@ class Display(object):
 		plt.ylabel('Cash')
 		plt.xlabel('Days')
 		plt.legend(loc='best')
+		plt.ylim([int(min(numbers))-50, int(max(numbers) + 50)])
 		plt.plot(numbers, '-g', label = 'Profit/Loss')
 		plt.show()
 		self.close_connection()

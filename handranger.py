@@ -10,6 +10,7 @@ class range_maker(object):
 		self.range = np.zeros(shape = (13,13), dtype = 'int')
 		self.back_board = np.zeros(shape = (13,13), dtype = 'int')
 		self.name = name
+		
 		f = open('data.dat', 'rb') #data.dat contains hand rankings for each specific hand.
 		raw_lines = []
 		for line in f.readlines(): raw_lines.append(line[:-2])
@@ -21,7 +22,8 @@ class range_maker(object):
 		output = refer[input]
 		return output
 
-	def Overall_percentile(self, percent): 		#makes a specific range based on inputed percentile and stores it in 2D array self.range
+	def Overall_percentile(self, percent): 		
+	#makes a specific range based on inputed percentile and stores it in 2D array self.range
 		hand_range_maximus = (float(percent)/100)*169
 		self.name = self.name + ' (' + str(percent) + ' %)'
 		for x in xrange(0,13): 
@@ -29,7 +31,9 @@ class range_maker(object):
 				if self.back_board[x][y] < hand_range_maximus: self.range[x][y] = 1
 				else: self.range[x][y] = 0
 
-	def Xx(self, MainString, Limit, OyS): #Xx(0/1) -> mark any range of a particular card (for example 'J', '7', 0 will mark all J off suite cards to J7o)
+	def Xx(self, MainString, Limit, OyS): 
+	#Xx(0/1) -> mark any range of a particular card (for example 'J', '7', 0 
+	#will mark all J off suite cards to J7o)
 		Limit = self.translate(Limit)
 	 	MainString = self.translate(MainString)
 	 	if OyS is 1:
@@ -45,13 +49,15 @@ class range_maker(object):
 	 	else:
 	 		return 'Invalid Input'
 
-	def Pairs(self, StartPair, Limit): #mark pairs from StartPair to Limit
+	def Pairs(self, StartPair, Limit): 
+	#mark pairs from StartPair to Limit
 		Limit = self.translate(Limit)
 	 	StartPair = self.translate(StartPair)
 	 	for x in range(StartPair,Limit+1):
 	 		self.range[x][x] = 1
 
-	def show_range(self): #show the range contained in range_maker
+	def show_range(self): 
+	#show the range contained in range_maker
 		ax = plt.axes()
 		ax.set_xticks(np.arange(0,15,1))
 		ax.set_yticks(np.arange(0,15,1))
@@ -70,7 +76,8 @@ class range_maker(object):
 		y = map(lambda x: x[1], points)
 
 		labels = [item.get_text() for item in ax.get_xticklabels()]
-		id = {0:'A', 1: 'K', 2: 'Q', 3: 'J', 4: 'T', 5: '9', 6: '8', 7: '7', 8:'6', 9:'5', 10: '4', 11: '3', 12: '2'}
+		id = {0:'A', 1: 'K', 2: 'Q', 3: 'J', 4: 'T', 5: '9', 6: '8', 7: '7', 8:'6', 9:'5', 10: '4', 
+		11: '3', 12: '2'}
 		for i in xrange(0,13):
 			labels[i] = id[i]
 
