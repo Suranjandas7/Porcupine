@@ -1,3 +1,4 @@
+from handranger import *
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -34,53 +35,14 @@ class Display(object):
 
 	def DAILY(self):
 		fd = pd.read_sql_query("SELECT * from main_data", self.conn)
-		Date_Money_Tuple = fd[['d', 'NetCash']].apply(tuple, axis = 1)
-		days_raw = []
-		
-		for element in Date_Money_Tuple:
-			 days_raw.append(element[0])
-		
-		def sorter(input_array):
-			months_index = {'01':'Jan', '02':'Feb', '03':'Mar', '04':'Apr', '05':'May', 
-			'06':'June', '07':'July', '08':'Aug', '09':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'}
-			number_of_days_in_a_month = {'Jan':31,'Feb':28,'Mar':31,'Apr':30,'May':31,'June':30, 
-			'July':31, 'Aug':31, 'Sep':30, 'Oct':31, 'Nov':30, 'Dec':31}
-			
-			days = []
-			months = []
-			years = []
-			string_list = []
-			
-			for element in input_array:
-				string_list.append(str(int(element)))
-			
-			for element in string_list:
-				if len(element) is 7:
-					days.append(element[0])
-					months.append(element[1:3]) 
-					years.append(element[3:len(element)])
-				if len(element) is 8:
-					days.append(element[0:2])
-					months.append(element[2:4]) 
-					years.append(element[4:len(element)])
-
-			def remove_duplicates(data):
-				counter = collections.Counter(data)
-				for element in data:
-					while counter[element] > 1:
-						data.remove(element)
-						counter = collections.Counter(data)
-				return data
-		
-			number_days = remove_duplicates(days)
-			number_months = remove_duplicates(months)
-			number_years = remove_duplicates(years)
-			text_months = []
-			for element in number_months:
-				text = months_index[element]
-				text_months.append(text)  
-			print text_months
-		sorter(days_raw)
+		date_list = fd.groupby('d')['NetCash'].sum()
+		numbers = date_list.tolist()
+		plt.title('Daily Profit/Loss Chart')
+		plt.ylabel('Cash')
+		plt.xlabel('Days')
+		plt.legend(loc='best')
+		plt.plot(numbers, '-g', label = 'Profit/Loss')
+		plt.show()
 		self.close_connection()
 
 class Database(object):
@@ -101,7 +63,7 @@ class Database(object):
 		conn = sqlite3.connect('SnG.db')
 		c = conn.cursor()
 		
-		d = str(raw_input("Enter Date : "))
+		d = str(raw_input("Enter Date [YYMMDD]: "))
 		p = float(raw_input("Enter P : "))
 		w = float(raw_input("Enter W : "))
 		in_s = int(raw_input('Enter in_stake : '))
