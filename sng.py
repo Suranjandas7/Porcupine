@@ -1,4 +1,7 @@
-from handranger import *
+#Contains two classes called Display and Database.
+#Display plots data using Matplotlib, all its methods will plot a different chart
+#Database stores SnG data into a db file using sqlite3 and retrivies stats from it using pandas and sqlite3
+
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -36,13 +39,19 @@ class Display(object):
 	def DAILY(self):
 		fd = pd.read_sql_query("SELECT * from main_data", self.conn)
 		date_list = fd.groupby('d')['NetCash'].sum()
+		labels_unrefined = fd['d']
+		labels_unrefined2 = collections.Counter(labels_unrefined)
+		final_labels = []
+		for key, value in labels_unrefined2.iteritems():
+			final_labels.append(key)
+		final_labels.sort()
 		numbers = date_list.tolist()
 		plt.title('Daily Profit/Loss Chart')
 		plt.ylabel('Cash')
 		plt.xlabel('Days')
-		plt.legend(loc='best')
 		plt.ylim([int(min(numbers))-50, int(max(numbers) + 50)])
 		plt.plot(numbers, '-g', label = 'Profit/Loss')
+		plt.legend(loc='best')
 		plt.show()
 		self.close_connection()
 
