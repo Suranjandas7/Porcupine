@@ -28,7 +28,7 @@ class Display(object):
 			accumulation = accumulation + float(value)
 			values_accumulated_netcash.append(accumulation)
 		plt.title('WinPer and NetCash')
-		plt.plot(values_winper, 'b^', alpha = 0.25, label = 'Win Percentage')
+		plt.plot(values_winper, '*', alpha = 0.25, label = 'Win Percentage')
 		plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
 		plt.ylabel('Net Cash')
 		plt.xlabel('Sessions')
@@ -130,15 +130,17 @@ class Database(object):
 		winper = round((float((fd['W'].sum())/float(fd['P'].sum()))),3) * 100
 		Net_Cash = round(float(fd['NetCash'].sum()),2)
 		Per_Game = round(Net_Cash/float(played),2)
+		Per_Hour = round(float(Per_Game * (60/12.5)),-1)
 		ForeCast_Labels = forecastor(int(played))
 
-		print '\nTotal'
-		print 'Played : ' + played
-		print 'Won    : ' + won
-		print 'WinPerG: ' + str(winper)
-		print 'NetCash: ' + str(Net_Cash)
-		print 'PerGame: ' + str(Per_Game)
-		print 'Forecast -'
-		print 'Games' + '\t' + 'NetCash Estimated'
-		for x in xrange(0,4): print ForeCast_Labels[x] + '\t' +  str(Per_Game * 
+		print '\n[STATS]\n'
+		print '\tPlayed : ' + played
+		print '\tWon    : ' + won
+		print '\tWinPerG: ' + str(winper)
+		print '\tNetCash: ' + str(Net_Cash)
+		print '\tPerGame: ' + str(Per_Game)
+		print '\tPerHour: ' + str(Per_Hour)
+		print '\n[Forecast]\n'
+		print '\t[Games]' + '\t' + '\t[NetCash Estimated]'
+		for x in xrange(0,4): print '\t' + ForeCast_Labels[x] + '\t\t' +  str(Per_Game * 
 		int(ForeCast_Labels[x]))
