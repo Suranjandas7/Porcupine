@@ -1,11 +1,13 @@
 #Contains two classes called Display and Database.
 #Display plots data using Matplotlib, all its methods will plot a different chart
 #Database stores SnG data into a db file using sqlite3 and retrivies stats from it using pandas and sqlite3
+#Display uses numpy for moving-averages etc
 
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt 
 import collections
+import numpy as np
 
 plt.style.use('seaborn-darkgrid')
 
@@ -18,7 +20,15 @@ class Display(object):
 		self.cursor.close()
 		self.conn.close()
 
-	def WPNC(self):
+	def Statistics(self):
+		#make a matplotlib chart that'll use the values read() pulls.
+		print 'MAW'
+
+	def WPNC(self, mode):
+		def moving_average(interval, window_size):
+			window = np.ones(int(window_size))/float(window_size)
+			return np.convolve(interval, window, 'same')
+
 		fd = pd.read_sql_query("SELECT * from main_data", self.conn)
 		values_winper = fd['WinPer'].tolist()
 		values_netcash = fd['NetCash'].tolist()
@@ -28,9 +38,24 @@ class Display(object):
 			accumulation = accumulation + float(value)
 			values_accumulated_netcash.append(accumulation)
 		plt.title('WinPer and NetCash')
-		plt.plot(values_winper, '*', alpha = 0.25, label = 'Win Percentage')
-		plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
+		m_avg = moving_average(values_winper, 10)
+		m_avg2 = moving_average(values_accumulated_netcash, 10)
+
+		if mode == 0:
+			plt.plot(values_winper, '*', alpha = 0.25, label = 'Win Percentage')
+			plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
+			plt.plot(m_avg, '--r', alpha = 0.20, label = 'Moving Average (WinPer)')
+			plt.plot(m_avg2, '--k', alpha = 0.55, label = 'Moving Average (NetCash)')
+		if mode == 1:
+			plt.plot(values_winper, 'b.', alpha = 1.00, label = 'Win Percentage')
+			plt.plot(m_avg, '--r', alpha = 0.95, label = 'Moving Average (WinPer)')
+			plt.ylim([-100,200])
+		else:
+			plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
+			plt.plot(m_avg2, 'b.', alpha = 0.85, label = 'Moving Average (NetCash)')
+
 		plt.ylabel('Net Cash')
+		if mode == 1: plt.ylabel('Percentage')
 		plt.xlabel('Sessions')
 		plt.legend(loc='best')
 		plt.show()
