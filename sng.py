@@ -56,6 +56,9 @@ class Display(object):
 		if mode == 'only_netcash':
 			plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
 			plt.plot(m_avg_netcash, 'b.', alpha = 0.85, label = 'Moving Average (NetCash)')
+		if mode == 'list':
+			print '\tAvailable modes - ' + '/all, /only_winper, /only_m_avg, /only_netcash'
+			return
 
 		plt.ylabel('Net Cash')
 		if mode == 1: plt.ylabel('Percentage')
