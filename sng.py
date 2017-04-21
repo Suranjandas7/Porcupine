@@ -37,22 +37,25 @@ class Display(object):
 		for value in values_netcash:
 			accumulation = accumulation + float(value)
 			values_accumulated_netcash.append(accumulation)
-		plt.title('WinPer and NetCash')
-		m_avg = moving_average(values_winper, 10)
-		m_avg2 = moving_average(values_accumulated_netcash, 10)
+		plt.title('Porcupine')
+		m_avg_winper = moving_average(values_winper, 10)
+		m_avg_netcash = moving_average(values_accumulated_netcash, 10)
 
-		if mode == 0:
+		if mode == 'all':
 			plt.plot(values_winper, '*', alpha = 0.25, label = 'Win Percentage')
 			plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
-			plt.plot(m_avg, '--r', alpha = 0.20, label = 'Moving Average (WinPer)')
-			plt.plot(m_avg2, '--k', alpha = 0.55, label = 'Moving Average (NetCash)')
-		if mode == 1:
+			plt.plot(m_avg_winper, '--r', alpha = 0.20, label = 'Moving Average (WinPer)')
+			plt.plot(m_avg_netcash, '--k', alpha = 0.55, label = 'Moving Average (NetCash)')
+		if mode == 'only_winper':
 			plt.plot(values_winper, 'b.', alpha = 1.00, label = 'Win Percentage')
-			plt.plot(m_avg, '--r', alpha = 0.95, label = 'Moving Average (WinPer)')
-			plt.ylim([-100,200])
-		else:
+			plt.plot(m_avg_winper, '--r', alpha = 0.95, label = 'Moving Average (WinPer)')
+			plt.ylim([-200,200])
+		if mode == 'only_m_avg':
+			plt.plot(m_avg_winper, 'g.', label = 'Win Perc Moving Average')
+			plt.plot(m_avg_netcash, ':b', label = 'Net Cash Moving Average')
+		if mode == 'only_netcash':
 			plt.plot(values_accumulated_netcash, '-g', label = 'Cash Won')
-			plt.plot(m_avg2, 'b.', alpha = 0.85, label = 'Moving Average (NetCash)')
+			plt.plot(m_avg_netcash, 'b.', alpha = 0.85, label = 'Moving Average (NetCash)')
 
 		plt.ylabel('Net Cash')
 		if mode == 1: plt.ylabel('Percentage')
